@@ -1,0 +1,14 @@
+{
+	"Targets": [
+		{
+			"Name": "GB_Tanks",
+			"Path": "E:\\GeekBrains\\GB_Tanks\\Source\\GB_Tanks.Target.cs",
+			"Type": "Game"
+		},
+		{
+			"Name": "GB_TanksEditor",
+			"Path": "E:\\GeekBrains\\GB_Tanks\\Source\\GB_TanksEditor.Target.cs",
+			"Type": "Editor"
+		}
+	]
+}

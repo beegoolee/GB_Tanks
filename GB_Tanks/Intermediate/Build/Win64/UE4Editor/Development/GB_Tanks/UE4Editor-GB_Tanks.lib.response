@@ -1,0 +1,15 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UE4Editor-GB_Tanks.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"E:\GeekBrains\GB_Tanks\Intermediate\Build\Win64\GB_TanksEditor\Development\Engine\SharedPCH.Engine.ShadowErrors.h.obj"
+"E:\GeekBrains\GB_Tanks\Intermediate\Build\Win64\UE4Editor\Development\GB_Tanks\GB_Tanks.cpp.obj"
+"E:\GeekBrains\GB_Tanks\Intermediate\Build\Win64\UE4Editor\Development\GB_Tanks\GB_TanksGameModeBase.cpp.obj"
+"E:\GeekBrains\GB_Tanks\Intermediate\Build\Win64\UE4Editor\Development\GB_Tanks\GB_Tanks.init.gen.cpp.obj"
+"E:\GeekBrains\GB_Tanks\Intermediate\Build\Win64\UE4Editor\Development\GB_Tanks\GB_TanksGameModeBase.gen.cpp.obj"
+"E:\GeekBrains\GB_Tanks\Intermediate\Build\Win64\UE4Editor\Development\GB_Tanks\Default.rc2.res"
+/OUT:"E:\GeekBrains\GB_Tanks\Intermediate\Build\Win64\UE4Editor\Development\GB_Tanks\UE4Editor-GB_Tanks.lib"

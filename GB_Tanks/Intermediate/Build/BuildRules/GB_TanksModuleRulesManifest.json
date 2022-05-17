@@ -1,0 +1,8 @@
+{
+	"SourceFiles": [
+		"E:\\GeekBrains\\GB_Tanks\\Source\\GB_Tanks\\GB_Tanks.Build.cs",
+		"E:\\GeekBrains\\GB_Tanks\\Source\\GB_Tanks.Target.cs",
+		"E:\\GeekBrains\\GB_Tanks\\Source\\GB_TanksEditor.Target.cs"
+	],
+	"EngineVersion": "4.27.2"
+}
