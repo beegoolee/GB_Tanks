@@ -21,13 +21,27 @@ protected:
 	UPROPERTY()
 		ATankBase* TankBase;
 
+	virtual void Tick(float DeltaSeconds) override;
 	virtual void BeginPlay() override;
+
 	void MoveForward(float AxisValue);
 	void Rotate(float AxisValue);
-	void RotateTurret(float AxisValue);
-	void CanonFire();
+	
+	float forwardCurrentAxis = 0;
+	float rotateCurrentAxis = 0;
+
+	UFUNCTION()
+		void SetMousePosition();
+
+	void Fire();
+
+	void FireSpecial();
 
 public:
 	ATankBaseController();
+
 	virtual void SetupInputComponent() override;
+
+	UPROPERTY()
+		FVector MousePosition;
 };

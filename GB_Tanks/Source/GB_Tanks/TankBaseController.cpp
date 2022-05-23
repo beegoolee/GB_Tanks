@@ -2,9 +2,11 @@
 
 
 #include "TankBaseController.h"
+#include "DrawDebugHelpers.h"
 
 ATankBaseController::ATankBaseController() {
-
+	bShowMouseCursor = true;
+	PrimaryActorTick.bCanEverTick = true;
 }
 
 void ATankBaseController::SetupInputComponent()
@@ -16,14 +18,12 @@ void ATankBaseController::SetupInputComponent()
 
 	InputComponent->BindAxis("RotateBody", this,
 		&ATankBaseController::Rotate);
-
-	InputComponent->BindAxis("RotateTurret", this,
-		&ATankBaseController::RotateTurret);
 	
-	/*
-	InputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this,
-		&ATankBaseController::MoveForward);
-		*/
+	InputComponent->BindAction("Fire", IE_Pressed, this,
+		&ATankBaseController::Fire);
+
+	InputComponent->BindAction("FireSpecial", IE_Pressed, this,
+		&ATankBaseController::FireSpecial);
 }
 
 void ATankBaseController::BeginPlay()
@@ -35,19 +35,49 @@ void ATankBaseController::BeginPlay()
 // tank body control
 void ATankBaseController::MoveForward(float AxisValue)
 {
-	this->TankBase->GetForwardAxis(AxisValue);
+	forwardCurrentAxis = FMath::Lerp(forwardCurrentAxis, AxisValue, TankBase->forwardMoveInterpKey);
+	TankBase->GetForwardAxis(forwardCurrentAxis);
 }
 void ATankBaseController::Rotate(float AxisValue)
 {
-	this->TankBase->GetRotationAxis(AxisValue);
+	rotateCurrentAxis = FMath::Lerp(rotateCurrentAxis, AxisValue, TankBase->rotateInterpKey);
+	TankBase->GetRotationAxis(rotateCurrentAxis);
 }
 
-// turret control
-void ATankBaseController::RotateTurret(float AxisValue)
-{
-	this->TankBase->GetTurretRotationAxis(AxisValue);
+void ATankBaseController::SetMousePosition() {
+	if (GetWorld()) {
+		FHitResult Hit;
+		GetHitResultUnderCursor(ECC_Visibility, false, Hit);
+
+		if (Hit.bBlockingHit) {
+			MousePosition = Hit.ImpactPoint;
+		}
+
+		FVector TankPosition = TankBase->GetActorLocation();
+
+		MousePosition.Z = TankPosition.Z;
+
+		FVector dir = MousePosition - TankPosition;
+
+		dir.Normalize();
+
+		MousePosition = TankPosition + dir*10000;
+
+		TankBase->TurretFacetoLocation = MousePosition;
+	}
 }
-void ATankBaseController::CanonFire()
+
+void ATankBaseController::Tick(float DeltaSeconds) {
+	Super::Tick(DeltaSeconds);
+	SetMousePosition();
+}
+
+void ATankBaseController::Fire()
 {
-	this->TankBase->CanonFire();
+	TankBase->Fire();
+}
+
+void ATankBaseController::FireSpecial()
+{
+	TankBase->FireSpecial();
 }
