@@ -4,6 +4,8 @@
 #include "Components/StaticMeshComponent.h"
 #include "TimerManager.h"
 #include "Engine/Engine.h"
+#include "DrawDebugHelpers.h"
+#include "Math/UnrealMathUtility.h"
 
 ACannon::ACannon()
 {
@@ -40,6 +42,30 @@ void ACannon::Fire()
 	else
 	{
 		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - trace");
+		FHitResult hitResult;
+
+		FCollisionQueryParams(FName(TEXT("FireTrace")), true, this);
+		FCollisionQueryParams traceParams = FCollisionQueryParams(FName(TEXT("FireTrace")), true, this);
+
+		traceParams.bTraceComplex = true;
+		traceParams.bReturnPhysicalMaterial = false;
+		FVector start = ProjectileSpawnPoint->GetComponentLocation();
+		FVector end = ProjectileSpawnPoint->GetForwardVector() * FireRange + start;
+		if(GetWorld()->LineTraceSingleByChannel(hitResult, start, end,
+		ECollisionChannel::ECC_Visibility, traceParams))
+		{
+		DrawDebugLine(GetWorld(), start, hitResult.Location, FColor::Red, false,
+		0.5f, 0, 5);
+		if(hitResult.Actor.Get())
+		{
+		hitResult.Actor.Get()->Destroy();
+		}
+		}
+		else
+		{
+		DrawDebugLine(GetWorld(), start, end, FColor::Red, false, 0.5f, 0, 5);
+		}
+
 	}
 	GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle, this, &ACannon::Reload, 1 / FireRate, false);
 }
@@ -104,4 +130,8 @@ void ACannon::BeginPlay()
 {
 	Super::BeginPlay();
 	Reload();
+}
+
+void ACannon::AddAmmoPoints(int addedPoints) {
+	AmmoCount = FMath::Clamp(AmmoCount + addedPoints, 0 , MaxAmmoCount);
 }

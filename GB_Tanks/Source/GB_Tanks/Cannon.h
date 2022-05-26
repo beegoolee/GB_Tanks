@@ -39,7 +39,8 @@ protected:
 	virtual void BeginPlay() override;
 	void Reload();
 
-	int AmmoCount = 30;
+	int MaxAmmoCount = 30;
+	int AmmoCount = MaxAmmoCount;
 	int Special_BurstShotCount = 0;
 
 public:
@@ -48,5 +49,5 @@ public:
 	void FireSpecial();
 	void Burst();
 	bool IsReadyToFire();
-
+	void AddAmmoPoints(int addedPoints);
 };

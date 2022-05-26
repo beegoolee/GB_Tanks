@@ -24,6 +24,9 @@ void ATankBaseController::SetupInputComponent()
 
 	InputComponent->BindAction("FireSpecial", IE_Pressed, this,
 		&ATankBaseController::FireSpecial);
+
+	InputComponent->BindAction("SwitchCannon", IE_Pressed, this,
+		&ATankBaseController::SwitchCannon);
 }
 
 void ATankBaseController::BeginPlay()
@@ -80,4 +83,9 @@ void ATankBaseController::Fire()
 void ATankBaseController::FireSpecial()
 {
 	TankBase->FireSpecial();
+}
+
+void ATankBaseController::SwitchCannon()
+{
+	TankBase->SwitchCannon();
 }

@@ -37,6 +37,8 @@ protected:
 
 	void FireSpecial();
 
+	void SwitchCannon();
+
 public:
 	ATankBaseController();
 
