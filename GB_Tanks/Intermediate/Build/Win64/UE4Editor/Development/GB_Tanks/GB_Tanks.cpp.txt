@@ -1,2 +1,0 @@
-E:\GeekBrains\GB_Tanks\Intermediate\Build\Win64\UE4Editor\Development\GB_Tanks\Definitions.GB_Tanks.h
-E:\GeekBrains\GB_Tanks\Source\GB_Tanks\GB_Tanks.h
