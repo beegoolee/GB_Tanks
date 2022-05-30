@@ -31,6 +31,8 @@ protected:
 		float Special_BurstFireDelay = 0.5f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params | Special Fire - burst size")
 		int Special_BurstSize = 3;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params | Laser damage params")
+		float fLaserDamage = 5.0f;
 
 	FTimerHandle ReloadTimerHandle;
 	FTimerHandle BurstHandle;

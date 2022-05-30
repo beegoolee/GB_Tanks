@@ -32,16 +32,14 @@
 /wd4244
 /wd4838
 /I .
-/I E:\GeekBrains\GB_Tanks\Intermediate\Build\Win64\UE4Editor\Inc\GB_Tanks
-/I E:\GeekBrains\GB_Tanks\Source
+/I ..\Intermediate\Build\Win64\UE4Editor\Inc\Engine
 /I Runtime
+/I Runtime\Engine\Classes
+/I Runtime\Engine\Public
 /I Runtime\TraceLog\Public
 /I Runtime\Core\Public
 /I ..\Intermediate\Build\Win64\UE4Editor\Inc\CoreUObject
 /I Runtime\CoreUObject\Public
-/I ..\Intermediate\Build\Win64\UE4Editor\Inc\Engine
-/I Runtime\Engine\Classes
-/I Runtime\Engine\Public
 /I ..\Intermediate\Build\Win64\UE4Editor\Inc\NetCore
 /I Runtime\Net
 /I Runtime\Net\Core\Classes
@@ -233,6 +231,8 @@
 /I Editor\Kismet\Public
 /I ..\Intermediate\Build\Win64\UE4Editor\Inc\ClothingSystemRuntimeInterface
 /I Runtime\ClothingSystemRuntimeInterface\Public
+/I E:\GeekBrains\GB_Tanks\Intermediate\Build\Win64\UE4Editor\Inc\GB_Tanks
+/I E:\GeekBrains\GB_Tanks\Source
 /I ThirdParty\PhysX3\PxShared\include
 /I ThirdParty\PhysX3\PxShared\include\cudamanager
 /I ThirdParty\PhysX3\PxShared\include\filebuf
@@ -256,7 +256,7 @@
 /I ThirdParty\PhysX3\APEX_1.4\shared\general\RenderDebug\public
 /I ThirdParty\PhysX3\APEX_1.4\shared\general\PairFilter\include
 /I ThirdParty\PhysX3\APEX_1.4\shared\internal\include
-/I D:\VS\VC\Tools\MSVC\14.30.30705\INCLUDE
+/I D:\VS\VC\Tools\MSVC\14.32.31326\INCLUDE
 /I "C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.2\include\um"
 /I "C:\Program Files (x86)\Windows Kits\10\include\10.0.19041.0\ucrt"
 /I "C:\Program Files (x86)\Windows Kits\10\include\10.0.19041.0\shared"

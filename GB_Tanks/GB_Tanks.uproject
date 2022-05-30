@@ -7,7 +7,11 @@
 		{
 			"Name": "GB_Tanks",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine",
+				"CoreUObject"
+			]
 		}
 	]
 }

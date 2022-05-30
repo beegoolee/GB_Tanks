@@ -2,17 +2,24 @@
 
 #pragma once
 
-#include "Cannon.h"
-#include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "HealthComponent.h"
+#include "DamageTaker.h"
+#include "Cannon.h"
+#include "Components/BoxComponent.h"
+#include "TimerManager.h"
+#include "Components/StaticMeshComponent.h"
+#include "Components/ArrowComponent.h"
+#include "Kismet/KismetMathLibrary.h"
+
 #include "TankBase.generated.h"
 
-class UStaticMeshComponent;
 class UCameraComponent;
 class USpringArmComponent;
 class ATankBaseController;
 class ACannon;
-
+class UHealthComponent;
+class UStaticMeshComponent;
 
 UCLASS()
 class GB_TANKS_API ATankBase : public APawn
@@ -20,12 +27,18 @@ class GB_TANKS_API ATankBase : public APawn
 	GENERATED_BODY()
 
 protected:
-
+	/* Общие у танка и турели компоненты */
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 		UStaticMeshComponent* BodyMesh;
-
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 		UStaticMeshComponent* TurretMesh;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UBoxComponent* HitCollider;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UArrowComponent* CannonSetupPoint;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UHealthComponent* HealthComponent;
+	/* Общие у танка и турели компоненты */
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
 		USpringArmComponent* SpringArm;
@@ -43,9 +56,6 @@ protected:
 
 	float _targetForwardAxisValue;
 	float _targetRotationAxisValue;
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-		UArrowComponent* CannonSetupPoint;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Turret|Cannon")
 		TSubclassOf<ACannon> CannonClassMain;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Turret| Alternative Cannon")
@@ -59,6 +69,7 @@ protected:
 		ACannon* ActiveCannon = CannonMain;
 
 	bool isMainCannonSelected = true;
+	int iScorePoints = 0;
 
 public:	
 
@@ -83,6 +94,17 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	/* Общие у танка и турели методы */
+	UFUNCTION()
+		virtual void TakeDamage(FDamageData DamageData);
+	UFUNCTION()
+		virtual void Die();
+	UFUNCTION()
+		virtual void DamageTaked(float DamageValue);
+	UFUNCTION()
+		virtual void Fire();
+	/* Общие у танка и турели методы */
+
 
 	// tank movement funcs
 	UFUNCTION()
@@ -92,13 +114,15 @@ public:
 
 	// tank combat funcs
 	UFUNCTION()
-		void Fire();
-	UFUNCTION()
 		void FireSpecial();
 	UFUNCTION()
 		void SwitchCannon();
 	UFUNCTION()
 		ACannon* GetActiveCannon();
+
+	
+	UFUNCTION()
+		void AddScorePoints(int AddedPoints);
 
 	// event tick funcs
 	UFUNCTION()

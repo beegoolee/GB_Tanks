@@ -2,19 +2,15 @@
 
 
 #include "TankBase.h"
-#include "Components/StaticMeshComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "TankBaseController.h"
-#include "Kismet/KismetMathLibrary.h"
 #include "Engine/Engine.h"
-#include "Components/ArrowComponent.h"
 
 
 DECLARE_LOG_CATEGORY_EXTERN(TankLog, All, All);
 DEFINE_LOG_CATEGORY(TankLog);
 
-// Sets default values
 ATankBase::ATankBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -36,7 +32,38 @@ ATankBase::ATankBase()
 
 	CannonSetupPoint = CreateDefaultSubobject<UArrowComponent>(TEXT("Cannon setup point"));
 	CannonSetupPoint->AttachToComponent(TurretMesh,FAttachmentTransformRules::KeepRelativeTransform);
+
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health component"));
+	HealthComponent->OnDie.AddUObject(this, &ATankBase::Die);
+	HealthComponent->OnDamaged.AddUObject(this, &ATankBase::DamageTaked);
+
+	HitCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("Hit collider"));
+	HitCollider->SetupAttachment(BodyMesh);
 }
+
+void ATankBase::TakeDamage(FDamageData DamageData)
+{
+	HealthComponent->TakeDamage(DamageData);
+}
+
+void ATankBase::AddScorePoints(int AddedPoints)
+{
+	iScorePoints += AddedPoints;
+
+	UE_LOG(TankLog, Warning, TEXT("Enemy destroyed by player! Current score points: %i"), iScorePoints);
+}
+
+void ATankBase::Die()
+{
+	Destroy();
+}
+
+void ATankBase::DamageTaked(float DamageValue)
+{
+	UE_LOG(TankLog, Warning, TEXT("Tank %s taked damage:%f Health:%f"), *GetName(),
+		DamageValue, HealthComponent->GetHealth());
+}
+
 
 void ATankBase::BeginPlay() {
 	Super::BeginPlay();
@@ -178,7 +205,6 @@ void ATankBase::FireSpecial()
 		ActiveCannon->FireSpecial();
 	}
 }
-
 
 ACannon* ATankBase::GetActiveCannon() {
 	return ActiveCannon;
