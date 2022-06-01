@@ -25,16 +25,33 @@ ATurret::ATurret()
 	HealthComponent->OnDie.AddUObject(this, &ATurret::Die);
 	HealthComponent->OnDamaged.AddUObject(this, &ATurret::DamageTaked);
 
+	OnDestroyVFX = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("On destroy particle"));
+	OnDestroyVFX->SetupAttachment(RootComponent);
+
+	OnDestroySFX = CreateDefaultSubobject<UAudioComponent>(TEXT("On destroy sound"));
+	OnDestroySFX->SetupAttachment(RootComponent);
+
+	OnDamageVFX = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("On getting damage particle"));
+	OnDamageVFX->SetupAttachment(RootComponent);
+
+	OnDamageSFX = CreateDefaultSubobject<UAudioComponent>(TEXT("On getting damage particle sound"));
+	OnDamageSFX->SetupAttachment(RootComponent);
 }
 
 void ATurret::TakeDamage(FDamageData DamageData)
 {
 	HealthComponent->TakeDamage(DamageData);
+	OnDamageVFX->ActivateSystem();
+	OnDamageSFX->Play();
 }
 
 void ATurret::Die()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Turret %s is dead"), *GetName());
+
+	OnDestroyVFX->ActivateSystem();
+	OnDestroySFX->Play();
+
 	Destroy();
 }
 
@@ -78,10 +95,13 @@ void ATurret::Targeting()
 
 void ATurret::RotateToPlayer()
 {
-	FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), PlayerPawn->GetActorLocation());
+	FVector targetLoc = PlayerPawn->GetActorLocation();
+
+	FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), targetLoc);
 	FRotator currRotation = TurretMesh->GetComponentRotation();
 	targetRotation.Pitch = currRotation.Pitch;
 	targetRotation.Roll = currRotation.Roll;
+
 	TurretMesh->SetWorldRotation(FMath::Lerp(currRotation, targetRotation, TargetingSpeed));
 }
 
@@ -96,7 +116,22 @@ bool ATurret::CanFire()
 	FVector dirToPlayer = PlayerPawn->GetActorLocation() - GetActorLocation();
 	dirToPlayer.Normalize();
 	float aimAngle = FMath::RadiansToDegrees(acosf(FVector::DotProduct(targetingDir, dirToPlayer)));
-	return aimAngle <= Accurency;
+	
+	FVector targetLoc = PlayerPawn->GetActorLocation();
+
+	FHitResult TargetHitResult;
+	FCollisionQueryParams traceParams = FCollisionQueryParams(FName(TEXT("GameObjectTrace")), true, this);
+
+	GetWorld()->LineTraceSingleByChannel(TargetHitResult, GetEyesPosition(), targetLoc, ECollisionChannel::ECC_Visibility, traceParams);
+
+	ATankBase* targetPawn = Cast<ATankBase>(TargetHitResult.Actor.Get());
+
+	if (targetPawn == PlayerPawn) {
+		return aimAngle <= Accurency;
+	}
+	else {
+		return false;
+	};
 }
 
 void ATurret::Fire()
@@ -106,3 +141,7 @@ void ATurret::Fire()
 	}	
 }
 
+FVector ATurret::GetEyesPosition()
+{
+	return CannonSetupPoint->GetComponentLocation();
+}

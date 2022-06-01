@@ -11,6 +11,8 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/ArrowComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Components/AudioComponent.h"
+#include "Particles/ParticleSystemComponent.h"
 
 #include "TankBase.generated.h"
 
@@ -27,7 +29,7 @@ class GB_TANKS_API ATankBase : public APawn
 	GENERATED_BODY()
 
 protected:
-	/* Общие у танка и турели компоненты */
+	/* Общие у танка и турели компоненты и переменные */
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 		UStaticMeshComponent* BodyMesh;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
@@ -38,7 +40,22 @@ protected:
 		UArrowComponent* CannonSetupPoint;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 		UHealthComponent* HealthComponent;
-	/* Общие у танка и турели компоненты */
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UParticleSystemComponent* OnDestroyVFX;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UAudioComponent* OnDestroySFX;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UParticleSystemComponent* OnDamageVFX;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UAudioComponent* OnDamageSFX;
+	/* Общие у танка и турели компоненты и переменные */
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|Move params|Patrol points" , Meta = (MakeEditWidget = true))
+		TArray<FVector> PatrollingPoints;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|Move params|Accurency")
+		float MovementAccurency = 50;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
 		USpringArmComponent* SpringArm;
@@ -103,6 +120,12 @@ public:
 		virtual void DamageTaked(float DamageValue);
 	UFUNCTION()
 		virtual void Fire();
+	UFUNCTION()
+		FVector GetTurretForwardVector();
+	UFUNCTION()
+		void RotateTurretTo(FVector TargetPosition);
+
+	FVector GetEyesPosition();
 	/* Общие у танка и турели методы */
 
 
@@ -129,4 +152,9 @@ public:
 		void TankMovement(float DeltaTime);
 	UFUNCTION()
 		void TurretRotation();
+
+	UFUNCTION()
+		TArray<FVector> GetPatrollingPoints() { return PatrollingPoints; };
+	UFUNCTION()
+		float GetMovementAccurency() { return MovementAccurency; };
 };

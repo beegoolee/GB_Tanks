@@ -10,6 +10,9 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/ArrowComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "DrawDebugHelpers.h"
+#include "Components/AudioComponent.h"
+#include "Particles/ParticleSystemComponent.h"
 
 #include "Turret.generated.h"
 
@@ -39,6 +42,18 @@ protected:
 		UArrowComponent* CannonSetupPoint;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 		UHealthComponent* HealthComponent;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UParticleSystemComponent* OnDestroyVFX;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UAudioComponent* OnDestroySFX;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UParticleSystemComponent* OnDamageVFX;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UAudioComponent* OnDamageSFX;
+
+	FVector GetEyesPosition();
 	/* Общие у танка и турели компоненты */
 
 	UPROPERTY()

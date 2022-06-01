@@ -39,11 +39,25 @@ ATankBase::ATankBase()
 
 	HitCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("Hit collider"));
 	HitCollider->SetupAttachment(BodyMesh);
+	
+	OnDestroyVFX = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("On destroy particle"));
+	OnDestroyVFX->SetupAttachment(RootComponent);
+
+	OnDestroySFX = CreateDefaultSubobject<UAudioComponent>(TEXT("On destroy sound"));
+	OnDestroySFX->SetupAttachment(RootComponent);
+
+	OnDamageVFX = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("On getting damage particle"));
+	OnDamageVFX->SetupAttachment(RootComponent);
+
+	OnDamageSFX = CreateDefaultSubobject<UAudioComponent>(TEXT("On getting damage particle sound"));
+	OnDamageSFX->SetupAttachment(RootComponent);
 }
 
 void ATankBase::TakeDamage(FDamageData DamageData)
 {
 	HealthComponent->TakeDamage(DamageData);
+	OnDamageVFX->ActivateSystem();
+	OnDamageSFX->Play();
 }
 
 void ATankBase::AddScorePoints(int AddedPoints)
@@ -55,6 +69,8 @@ void ATankBase::AddScorePoints(int AddedPoints)
 
 void ATankBase::Die()
 {
+	OnDestroyVFX->ActivateSystem();
+	OnDestroySFX->Play();
 	Destroy();
 }
 
@@ -226,4 +242,23 @@ void ATankBase::SwitchCannon() {
 		GEngine->AddOnScreenDebugMessage(13, 0.5f, FColor::Yellow, "Switch another canon");
 		SetupCannon(ActiveCannon->GetClass());
 	}
+}
+
+FVector ATankBase::GetTurretForwardVector()
+{
+	return TurretMesh->GetForwardVector();
+}
+
+void ATankBase::RotateTurretTo(FVector TargetPosition)
+{
+	FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetPosition);
+	FRotator currRotation = TurretMesh->GetComponentRotation();
+	targetRotation.Pitch = currRotation.Pitch;
+	targetRotation.Roll = currRotation.Roll;
+	TurretMesh->SetWorldRotation(FMath::Lerp(currRotation, targetRotation, fTurretRotationSpeed));
+}
+
+FVector ATankBase::GetEyesPosition()
+{
+	return CannonSetupPoint->GetComponentLocation();
 }
